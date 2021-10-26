@@ -7,3 +7,7 @@ export const SAVE_USER_MUTATION = (state, user) => {
 export const LOGGED_IN_MUTATION = (state, status) => {
   state.loggedIn = status;
 };
+
+export const UPDATE_FRIENDS = (state, friends) => {
+  state.friends = friends;
+};

@@ -17,6 +17,7 @@ import "firebase/compat/auth";
 // import "firebase/compat/firestore";
 // import Logout from "../components/Logout";
 import { mapActions, mapGetters } from "vuex";
+import { fetchUsers } from "../helpers";
 
 export default {
   name: "SignIn",
@@ -26,6 +27,11 @@ export default {
   //   };
   // },
   methods: {
+    ...mapActions("userstore", [
+      "saveUserAction",
+      "loggedInAction",
+      "updateFriendsAction",
+    ]),
     googleSignIn() {
       const provider = new firebase.auth.GoogleAuthProvider();
 
@@ -42,11 +48,16 @@ export default {
           console.log("user?", result.user);
         })
         .then(() => {
-          console.log("logged in from state", this.getStateLoggedIn);
+          // console.log("logged in from state", this.getStateLoggedIn);
           return this.getStateUser;
         })
         .then((res) => {
-          console.log("user res", res);
+          // console.log("user res", res);
+          return fetchUsers();
+        })
+        .then((res) => {
+          this.updateFriendsAction(res);
+          // console.log("res", res);
         })
         .catch((err) => {
           alert("Oops " + err.message);
@@ -74,7 +85,6 @@ export default {
       console.log("user", this.getStateUser);
       console.log("logged in", this.loggedIn);
     },
-    ...mapActions("userstore", ["saveUserAction", "loggedInAction"]),
   },
   components: {
     // Logout,

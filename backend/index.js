@@ -27,6 +27,7 @@ const db = admin.firestore();
 //   res.send("Hello World!");
 // });
 
+// get messages
 app.get("/messages", (req, res) => {
   res.set("Access-Control-Allow-Origin", "*");
   let messages = [];
@@ -41,6 +42,7 @@ app.get("/messages", (req, res) => {
     });
 });
 
+// post messages
 app.post("/postMessage", (req, res) => {
   console.log("posting Message");
   res.set("Access-Control-Allow-Origin", "*");
@@ -53,6 +55,40 @@ app.post("/postMessage", (req, res) => {
     })
     .then(() => {
       res.send("message posted");
+    });
+});
+
+// get users
+app.get("/user-profiles", (req, res) => {
+  res.set("Access-Control-Allow-Origin", "*");
+  let users = [];
+  db.collection("user-profiles")
+    .get()
+    .then((snapshot) => {
+      snapshot.forEach((doc) => {
+        users.push(doc.data());
+      });
+      res.send(users);
+    });
+});
+
+// create user
+app.post("/user-profiles", (req, res) => {
+  console.log("posting user");
+  res.set("Access-Control-Allow-Origin", "*");
+  db.collection("user-profiles")
+    .doc()
+    .set({
+      // uid: req.body.uid,
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      username: req.body.username,
+      email: req.body.email,
+      bio: req.body.bio,
+      img: req.body.img,
+    })
+    .then(() => {
+      res.send("user added");
     });
 });
 

@@ -13,3 +13,7 @@ export function loggedInAction({ commit }, payload) {
   console.log("loggedInAction called", payload);
   commit("LOGGED_IN_MUTATION", payload);
 }
+
+export function updateFriendsAction({ commit }, payload) {
+  commit("UPDATE_FRIENDS", payload);
+}

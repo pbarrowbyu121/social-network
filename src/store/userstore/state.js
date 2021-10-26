@@ -3,5 +3,6 @@ export default function () {
     //
     user: null,
     loggedIn: false,
+    friends: null,
   };
 }

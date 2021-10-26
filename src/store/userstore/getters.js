@@ -6,3 +6,7 @@ export function getStateUser(state) {
 export function getStateLoggedIn(state) {
   return state.loggedIn;
 }
+
+export function getFriends(state) {
+  return state.friends;
+}

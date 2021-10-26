@@ -45,6 +45,21 @@ const linksList = [
     icon: "fas fa-sign-in-alt",
     to: "/signin",
   },
+  {
+    title: "Profile",
+    icon: "fas fa-user-circle",
+    to: "/profile",
+  },
+  {
+    title: "Friends",
+    icon: "fas fa-users",
+    to: "/friends",
+  },
+  {
+    title: "Create User",
+    icon: "fas fa-user-plus",
+    to: "/adduser",
+  },
   // {
   //   title: 'Docs',
   //   caption: 'quasar.dev',
