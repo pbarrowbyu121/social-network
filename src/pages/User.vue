@@ -1,52 +1,56 @@
 <template>
-  <div class="container">
-    <div class="profile-pic">
-      <q-img :src="friend.img" :ratio="1" width="300px" />
-    </div>
-    <div class="profile-container">
-      <section>
-        <h3 class="name">{{ friend.firstName }} {{ friend.lastName }}</h3>
-        <div class="info">
-          <div class="hometown">
-            <div :style="{ minWidth: '80px' }">Hometown:</div>
-            <div>{{ friend.hometown }}</div>
-          </div>
-          <div class="bio">
-            <div :style="{ minWidth: '80px' }">Bio:</div>
-            <div>{{ friend.bio }}</div>
-          </div>
-        </div>
-      </section>
-    </div>
-  </div>
+	<div class="container">
+		<div class="profile-pic">
+			<q-img :src="friend.img" :ratio="1" width="300px" />
+		</div>
+		<div class="profile-container">
+			<section>
+				<h4 class="name">{{ friend.firstName }} {{ friend.lastName }}</h4>
+				<div class="actions">
+					<i class="far fa-comment fa-4x"></i>
+					<div>Chat</div>
+				</div>
+				<div class="info">
+					<div class="hometown">
+						<div :style="{ minWidth: '80px' }">Hometown:</div>
+						<div>{{ friend.hometown }}</div>
+					</div>
+					<div class="bio">
+						<div :style="{ minWidth: '80px' }">Bio:</div>
+						<div>{{ friend.bio }}</div>
+					</div>
+				</div>
+			</section>
+		</div>
+	</div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from "vuex";
 export default {
-  name: "User Page",
-  props: ["id"],
-  data() {
-    return {};
-  },
-  computed: {
-    ...mapGetters("userstore", [
-      "getStateUser",
-      "getStateLoggedIn",
-      "getFriends",
-    ]),
-    user() {
-      console.log("users?", this.getFriends);
-      return this.getStateUser;
-    },
-    friend() {
-      const friend = this.getFriends.find(
-        (userObj) => userObj.uid === this.$route.params.id
-      );
-      console.log("friend", friend);
-      return friend;
-    },
-  },
+	name: "User Page",
+	props: ["id"],
+	data() {
+		return {};
+	},
+	computed: {
+		...mapGetters("userstore", [
+			"getStateUser",
+			"getStateLoggedIn",
+			"getFriends",
+		]),
+		user() {
+			console.log("users?", this.getFriends);
+			return this.getStateUser;
+		},
+		friend() {
+			const friend = this.getFriends.find(
+				(userObj) => userObj.uid === this.$route.params.id
+			);
+			console.log("friend", friend);
+			return friend;
+		},
+	},
 };
 </script>
 
@@ -78,6 +82,11 @@ export default {
 	padding-right: 20px
 	padding-left: 20px
 	padding-bottom: 20px
+
+.actions
+	margin: auto
+	width: 100%
+	text-align: center
 
 .bio
 	display: flex
