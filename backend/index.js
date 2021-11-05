@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const port = 3000;
 const admin = require("firebase-admin");
+// let UUID = require("uuid-v4");
 
 // firestore stuff
 const serviceAccount = require("./serviceAccountKey.json");
@@ -86,6 +87,7 @@ app.post("/user-profiles", (req, res) => {
       email: req.body.email,
       bio: req.body.bio,
       img: req.body.img,
+      uid: req.body.uid,
     })
     .then(() => {
       res.send("user added");

@@ -8,5 +8,6 @@ export function getStateLoggedIn(state) {
 }
 
 export function getFriends(state) {
+  console.log("state friends", state.friends);
   return state.friends;
 }

@@ -6,6 +6,7 @@
         clickable
         v-ripple
         :key="friend.username"
+        :to="'/user/' + friend.uid"
       >
         <q-item-section avatar>
           <q-avatar>
