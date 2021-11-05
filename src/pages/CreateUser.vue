@@ -65,6 +65,7 @@ export default {
               username: this.username,
               bio: this.bio,
               img: this.randomUser.picture.thumbnail,
+              uid: this.user.uid,
             };
             return newUserObj;
           })
