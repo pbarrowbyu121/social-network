@@ -3,13 +3,18 @@
 		v-if="!getStateLoggedIn"
 		color="primary"
 		label="Sign In"
-		@click="modal = true"
+		@click="signInOptionsModal = true"
 	/>
 	<q-btn v-else color="primary" label="Sign Out" @click="signOut" />
 	<q-btn color="primary" label="Status" @click="showStatus" />
-	<q-dialog v-model="modal">
-		<!-- Sign In Method Modal -->
+
+	<!-- Sign In Options Modal -->
+	<q-dialog v-model="signInOptionsModal">
 		<q-card style="width: 300px">
+			<q-card-section>
+				<q-input filled v-model="email" label="Email" />
+				<q-input filled v-model="password" label="Password" />
+			</q-card-section>
 			<q-card-section>
 				<q-btn
 					v-if="!getStateLoggedIn"
@@ -20,31 +25,18 @@
 				<q-btn
 					v-if="!getStateLoggedIn"
 					color="primary"
-					label="Create Account"
-					@click="openNewAccountModal"
+					label="Sign In"
+					@click="emailSignIn"
 				/>
-			</q-card-section>
-
-			<q-card-actions align="right" class="bg-white text-teal">
-				<q-btn flat label="Cancel" v-close-popup />
-			</q-card-actions>
-		</q-card>
-	</q-dialog>
-	<!-- Create Account Modal -->
-	<q-dialog v-model="createAccountModal">
-		<q-card style="width: 300px">
-			<q-card-section>
-				<q-input filled v-model="email" label="Email" />
-				<q-input filled v-model="password" label="Password" />
-			</q-card-section>
-
-			<q-card-actions align="right" class="bg-white text-teal">
 				<q-btn
 					v-if="!getStateLoggedIn"
 					color="primary"
 					label="Create Account"
 					@click="createAccount"
 				/>
+			</q-card-section>
+
+			<q-card-actions align="right" class="bg-white text-teal">
 				<q-btn flat label="Cancel" v-close-popup />
 			</q-card-actions>
 		</q-card>
@@ -63,6 +55,7 @@ import { fetchUsers } from "../helpers";
 import {
 	getAuth,
 	createUserWithEmailAndPassword,
+	signInWithEmailAndPassword,
 	updateProfile,
 } from "firebase/auth";
 
@@ -70,8 +63,7 @@ export default {
 	name: "SignIn",
 	data() {
 		return {
-			modal: false,
-			createAccountModal: false,
+			signInOptionsModal: false,
 			email: "",
 			password: "",
 		};
@@ -105,15 +97,11 @@ export default {
 				})
 				.then((res) => {
 					this.updateFriendsAction(res);
-					this.modal = false;
+					this.signInOptionsModal = false;
 				})
 				.catch((err) => {
 					alert("Oops " + err.message);
 				});
-		},
-		openNewAccountModal() {
-			this.modal = false;
-			this.createAccountModal = true;
 		},
 		createAccount() {
 			const auth = getAuth();
@@ -133,7 +121,22 @@ export default {
 					const errorMessage = error.message;
 					// ..
 				});
-			this.createAccountModal = false;
+		},
+		emailSignIn() {
+			const auth = getAuth();
+			signInWithEmailAndPassword(auth, this.email, this.password)
+				.then((userCredential) => {
+					// Signed in
+					const user = userCredential.user;
+					this.saveUserAction(user);
+					this.loggedInAction(true);
+					this.signInOptionsModal = false;
+					// ...
+				})
+				.catch((error) => {
+					const errorCode = error.code;
+					const errorMessage = error.message;
+				});
 		},
 
 		signOut() {
