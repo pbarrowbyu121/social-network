@@ -87,6 +87,7 @@ export default {
 			"getStateLoggedIn",
 			"getFriends",
 		]),
+		// is this needed?
 		user() {
 			return this.getStateUser;
 		},
