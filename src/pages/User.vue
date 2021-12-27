@@ -1,12 +1,15 @@
 <template>
 	<div class="container">
 		<div class="profile-pic">
-			<q-img :src="friend.img" :ratio="1" width="300px" />
+			<q-img :src="friend.avatar" :ratio="1" width="300px" />
 		</div>
 		<div class="profile-container">
 			<section>
 				<h4 class="name">{{ friend.firstName }} {{ friend.lastName }}</h4>
-				<div class="actions">
+				<div
+					@click="getGroupId(['kolbXddAL5469Czy7KRi', 'zIqoDV7Jr6x8TBc16Wfh'])"
+					class="actions clickable"
+				>
 					<i class="far fa-comment fa-4x"></i>
 					<div>Chat</div>
 				</div>
@@ -27,11 +30,56 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
+import firebase from "firebase/compat/app";
+import "firebase/compat/auth";
+
+const db = firebase.firestore();
+
 export default {
 	name: "User Page",
 	props: ["id"],
+	privateChat: ["kolbXddAL5469Czy7KRi", "zIqoDV7Jr6x8TBc16Wfh"],
 	data() {
 		return {};
+	},
+	methods: {
+		filterGroup(userArray) {
+			const vm = this;
+			vm.groups = [];
+			return new Promise((resolve, reject) => {
+				let groupRef = db.collection("groups");
+
+				userArray.forEach((userId) => {
+					const field = "members." + userId;
+					groupRef = groupRef.where(field, "==", true);
+				});
+				groupRef
+					.get()
+					.then(function (querySnapshot) {
+						const allGroups = [];
+						querySnapshot.forEach((doc) => {
+							const data = doc.data();
+							data.id = doc.id;
+							Object.keys(data.members).length == 2
+								? allGroups.push(data)
+								: null;
+						});
+						if (allGroups.length > 0) {
+							resolve(allGroups[0].id);
+						} else {
+							resolve(null);
+						}
+					})
+					.catch(function (error) {
+						reject(error);
+					});
+			});
+		},
+		getGroupId(userArray) {
+			this.filterGroup(userArray).then((res) =>
+				this.$router.push({ path: `/chat/${res}` })
+			);
+		},
 	},
 	computed: {
 		...mapGetters("userstore", [
@@ -40,14 +88,15 @@ export default {
 			"getFriends",
 		]),
 		user() {
-			console.log("users?", this.getFriends);
 			return this.getStateUser;
 		},
 		friend() {
-			const friend = this.getFriends.find(
-				(userObj) => userObj.uid === this.$route.params.id
+			// const friend = this.getFriends.find(
+			// 	(userObj) => userObj.uid === this.$route.params.id
+			// );
+			const friend = this.$store.state.userstore.friends.find(
+				(userObj) => userObj.createdBy === this.$route.params.id
 			);
-			console.log("friend", friend);
 			return friend;
 		},
 	},
@@ -96,4 +145,7 @@ export default {
 	display: flex
 	flex-direction: row
 	padding-bottom: 10px
+
+.clickable
+	cursor: pointer
 </style>

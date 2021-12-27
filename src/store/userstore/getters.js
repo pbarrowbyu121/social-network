@@ -1,13 +1,16 @@
 export function someGetter(/* state */) {}
 export function getStateUser(state) {
-  return state.user;
+	return state.user;
 }
 
 export function getStateLoggedIn(state) {
-  return state.loggedIn;
+	return state.loggedIn;
 }
 
 export function getFriends(state) {
-  console.log("state friends", state.friends);
-  return state.friends;
+	return state.friends;
+}
+
+export function getGameProfile(state) {
+	return state.gameProfile;
 }

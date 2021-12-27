@@ -1,8 +1,9 @@
 export default function () {
-  return {
-    //
-    user: null,
-    loggedIn: false,
-    friends: null,
-  };
+	return {
+		//
+		user: null,
+		loggedIn: false,
+		friends: null,
+		gameProfile: null,
+	};
 }

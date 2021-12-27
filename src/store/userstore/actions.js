@@ -5,15 +5,17 @@ import "firebase/compat/firestore";
 import "firebase/compat/auth";
 
 export function saveUserAction({ commit }, payload) {
-  console.log("saveUserAction called");
-  commit("SAVE_USER_MUTATION", payload);
+	commit("SAVE_USER_MUTATION", payload);
 }
 
 export function loggedInAction({ commit }, payload) {
-  console.log("loggedInAction called", payload);
-  commit("LOGGED_IN_MUTATION", payload);
+	commit("LOGGED_IN_MUTATION", payload);
 }
 
 export function updateFriendsAction({ commit }, payload) {
-  commit("UPDATE_FRIENDS", payload);
+	commit("UPDATE_FRIENDS", payload);
+}
+
+export function updateGameProfileAction({ commit }, payload) {
+	commit("SET_GAME_PROFILE", payload);
 }
