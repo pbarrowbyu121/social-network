@@ -9,7 +9,14 @@
 
 import { getDatabase, ref, onValue, child, get } from "firebase/database";
 
-import { getFirestore, collection, getDocs } from "firebase/firestore/lite";
+import {
+	getFirestore,
+	collection,
+	addDoc,
+	getDocs,
+	query,
+	where,
+} from "firebase/firestore/lite";
 import { app } from "../src/boot/firebase.js";
 
 // app.use(express.json());
@@ -32,34 +39,62 @@ export async function fetchUsers() {
 }
 
 // GET ALL MESSAGES
-export async function fetchMessages() {
+export async function fetchMessages(groupId) {
 	const messagesArr = [];
-	const messagesCol = collection(db, "messages");
+	const messagesCol = query(
+		collection(db, "messages"),
+		where("groupId", "==", groupId)
+	);
+	// const messagesCol = collection(db, "messages");
 	const messagesSnapshot = await getDocs(messagesCol);
 	messagesSnapshot.forEach((doc) => {
 		messagesArr.push(doc.data());
 	});
 	return messagesArr.sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1));
 }
-// app.get(`/messages`, (req, res) => {
-// 	res.set("Access-Control-Allow-Origin", "*");
-// 	let messages = [];
-// 	db.collection("messages")
-// 		.get()
-// 		.then((snapshot) => {
-// 			snapshot.forEach((doc) => {
-// 				console.log(doc.id, "=>", doc.data());
-// 				messages.push(doc.data());
-// 			});
-// 			res.send(messages.sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1)));
-// 		});
-// });
 
 export function fetchGroupsByUsers() {
 	const getGroupsPromise = fetch("http://localhost:3000/group").then((res) =>
 		res.json()
 	);
 	return getGroupsPromise;
+}
+
+// FIND GROUP CHAT ID FOR A GIVEN ARRAY OF USER IDS
+export async function filterGroup(userArray) {
+	const groups = [];
+	const groupRef = query(
+		collection(db, "groups"),
+		where("count", "==", userArray.length)
+	);
+	const groupSnapshot = await getDocs(groupRef);
+	// QUESTION: How can I filter snapshot down to docs where "count" field is less than length of userArray
+	groupSnapshot.forEach((doc) => {
+		const members = doc.data().members;
+		let pushToggle = true;
+		userArray.forEach((id) => {
+			if (!members[id]) {
+				pushToggle = false;
+			}
+		});
+		if (pushToggle) {
+			groups.push(doc.id);
+		}
+	});
+	return groups[0];
+}
+
+// CREATE NEW CHAT GROUP
+export async function createGroup(userArray) {
+	let members = {};
+	userArray.forEach((memberId) => {
+		members[memberId] = true;
+	});
+	const docRef = await addDoc(collection(db, "groups"), {
+		count: userArray.length,
+		members,
+	});
+	return new Promise((resolve) => resolve(docRef.id));
 }
 
 export function getMe() {

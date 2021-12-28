@@ -8,7 +8,10 @@
 		>
 			<div class="row justify-center">
 				<span
-					v-if="selectedFriends.includes(friend.createdBy)"
+					v-if="
+						selectedFriends.includes(friend.createdBy) ||
+						me.uid === friend.createdBy
+					"
 					class="selected"
 				>
 					<div class="row items-center full-height full-width justify-center">
@@ -25,8 +28,11 @@
 					</div>
 				</span>
 
-				<q-item-label>{{
-					friend.firstName + " " + friend.lastName
+				<q-item-label class="text-caption">{{
+					friend.firstName +
+					" " +
+					friend.lastName +
+					(me.uid === friend.createdBy ? " (you)" : "")
 				}}</q-item-label>
 			</div>
 		</div>
@@ -51,7 +57,17 @@ export default {
 	},
 	methods: {
 		selectFriend(id) {
-			this.$emit("select-friend", id);
+			if (this.me.uid === id) {
+				return;
+			} else {
+				this.$emit("select-friend", id);
+			}
+		},
+	},
+	computed: {
+		me() {
+			const me = this.$store.state.userstore.user;
+			return me;
 		},
 	},
 };

@@ -28,17 +28,28 @@
 			@select-friend="selectFriend"
 			:selectedFriends="selectedFriends"
 		/>
+		<div class="absolute-bottom q-mx-auto q-mb-md" style="width: 150px">
+			<q-btn
+				color="primary"
+				icon="question_answer"
+				size="md"
+				label="Start Chat"
+				@click="startGroupChat"
+			/>
+		</div>
 	</div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from "vuex";
 import FriendsRow from "../components/FriendsRow.vue";
+import { filterGroup, createGroup } from "../helpers";
 export default {
 	name: "Friends Page",
 	data() {
 		return {
-			selectedFriends: [],
+			// QUESTION: Is this the best way to start, with the user already in the selectedFriends array?
+			selectedFriends: [this.$store.state.userstore.user.uid],
 		};
 	},
 	components: {
@@ -55,6 +66,18 @@ export default {
 			}
 			this.selectedFriends = selectedFriendsArr;
 		},
+		startGroupChat() {
+			const selectedFriendsArr = [...this.selectedFriends];
+			filterGroup(selectedFriendsArr)
+				.then((resp) => {
+					if (resp) {
+						return resp;
+					} else {
+						return createGroup(selectedFriendsArr);
+					}
+				})
+				.then((response) => this.$router.push({ path: `/chat/${response}` }));
+		},
 	},
 	computed: {
 		...mapGetters("userstore", [
@@ -62,9 +85,9 @@ export default {
 			"getStateLoggedIn",
 			"getFriends",
 		]),
-		user() {
-			const user = this.$store.state.userstore.user;
-			return user;
+		me() {
+			const me = this.$store.state.userstore.user;
+			return me;
 		},
 		friends() {
 			const subdividedArr = [];
