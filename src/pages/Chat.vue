@@ -2,14 +2,22 @@
 	<q-chat-message
 		v-for="item in messages"
 		:key="item.message"
-		name="me"
+		:name="getUser(item.createdBy).firstName"
 		:text="[item.message]"
 		:avatar="item.avatar"
 		:sent="item.createdBy === user.uid"
 		:bg-color="item.createdBy === user.uid ? 'primary' : 'grey'"
-		stamp="7 minutes ago"
+		:stamp="item.createdAt"
+		class="q-px-sm"
 	/>
-	<q-input rounded outlined v-model="newMessage" placeholder="Send" dense>
+	<q-input
+		class="q-mx-md q-mt-md"
+		rounded
+		outlined
+		v-model="newMessage"
+		placeholder="Send"
+		dense
+	>
 		<template v-slot:append>
 			<q-btn round dense flat icon="send" @click="sendMessage" />
 		</template>
@@ -31,7 +39,10 @@ export default {
 	methods: {
 		...mapActions("userstore", ["updateGameProfileAction"]),
 		getMessages() {
-			fetchMessages().then((res) => (this.messages = res));
+			fetchMessages(this.$route.params.id).then((res) => (this.messages = res));
+		},
+		getUser(id) {
+			return this.friends.find((friend) => friend.createdBy === id);
 		},
 		postMessage(messageObj) {
 			const sendMessagePromise = fetch("http://localhost:3000/postMessage", {
