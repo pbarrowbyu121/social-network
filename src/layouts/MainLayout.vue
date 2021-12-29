@@ -73,8 +73,13 @@ export default defineComponent({
 				},
 				{
 					title: "Friends",
-					icon: "fas fa-users",
+					icon: "fas fa-user-friends",
 					to: "/friends",
+				},
+				{
+					title: "Messages",
+					icon: "fas fa-comments",
+					to: "/messages",
 				},
 				{
 					title: "Create User",

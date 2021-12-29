@@ -38,7 +38,21 @@ export async function fetchUsers() {
 	return friendsArr;
 }
 
-// GET ALL MESSAGES
+// GET SPECIFIC USER BY ID
+export async function fetchUser(id) {
+	const users = [];
+	const userRef = query(
+		collection(db, "user-profiles"),
+		where("createdBy", "==", id)
+	);
+	const userSnapshot = await getDocs(userRef);
+	userSnapshot.forEach((doc) => {
+		users.push(doc.data());
+	});
+	return users[0];
+}
+
+// GET ALL MESSAGES FOR A GROUP
 export async function fetchMessages(groupId) {
 	const messagesArr = [];
 	const messagesCol = query(
@@ -58,6 +72,21 @@ export function fetchGroupsByUsers() {
 		res.json()
 	);
 	return getGroupsPromise;
+}
+
+// GETS ALL GROUPS FOR A GIVEN USER
+export async function getUsersGroups(userId) {
+	const groups = [];
+	const groupRef = query(
+		collection(db, "groups"),
+		where("members." + userId, "==", true)
+	);
+	const groupSnapshot = await getDocs(groupRef);
+
+	groupSnapshot.forEach((doc) => {
+		groups.push({ groupId: doc.id, ...doc.data() });
+	});
+	return groups;
 }
 
 // FIND GROUP CHAT ID FOR A GIVEN ARRAY OF USER IDS
