@@ -14,6 +14,10 @@ const routes = [
 			{ path: "/friends", component: () => import("pages/Friends.vue") },
 			{ path: "/adduser", component: () => import("pages/CreateUser.vue") },
 			{
+				path: "/messages",
+				component: () => import("pages/MessageGroups.vue"),
+			},
+			{
 				path: "/user/:id",
 				component: () => import("pages/User.vue"),
 				props: true,

@@ -33,7 +33,7 @@
 				color="primary"
 				icon="question_answer"
 				size="md"
-				label="Start Chat"
+				label="Message"
 				@click="startGroupChat"
 			/>
 		</div>
