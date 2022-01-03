@@ -19,16 +19,22 @@
 				</div>
 			</div>
 			<!-- <q-item-label>Single line item</q-item-label> -->
-			<q-item-label
-				style="height: 28px"
-				v-if="recentMessage"
-				caption
-				lines="2"
-				>{{ recentMessage.message ?? " " }}</q-item-label
-			>
-			<q-item-label style="height: 28px" v-else caption lines="2">{{
-				" "
-			}}</q-item-label>
+			<div class="row">
+				<q-item-label
+					class="col"
+					style="height: 28px"
+					v-if="recentMessage"
+					caption
+					lines="2"
+					>{{ recentMessage.message ?? " " }}</q-item-label
+				>
+				<q-item-label style="height: 28px" v-else caption lines="2">{{
+					" "
+				}}</q-item-label>
+				<div class="col-1 text-right">
+					<i class="fas fa-chevron-right" />
+				</div>
+			</div>
 		</q-item-section>
 
 		<!-- <q-item-section side top>

@@ -11,9 +11,11 @@
 					@click="toggleLeftDrawer"
 				/>
 
-				<q-toolbar-title> Quasar App </q-toolbar-title>
+				<q-toolbar-title class="text-titillium-web text-bold"
+					>social network</q-toolbar-title
+				>
 
-				<div>Quasar v{{ $q.version }}</div>
+				<!-- <div>Quasar v{{ $q.version }}</div> -->
 			</q-toolbar>
 		</q-header>
 

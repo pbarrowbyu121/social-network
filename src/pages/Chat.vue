@@ -1,17 +1,19 @@
 <template>
-	<q-chat-message
-		v-for="item in messages"
-		:key="item.message"
-		:name="getUser(item.createdBy).firstName"
-		:text="[item.message]"
-		:avatar="item.avatar"
-		:sent="item.createdBy === user.uid"
-		:bg-color="item.createdBy === user.uid ? 'primary' : 'grey'"
-		:stamp="item.createdAt"
-		class="q-px-sm"
-	/>
+	<div class="q-mb-xl">
+		<q-chat-message
+			v-for="item in messages"
+			:key="item.message"
+			:name="getUser(item.createdBy).firstName"
+			:text="[item.message]"
+			:avatar="item.avatar"
+			:sent="item.createdBy === user.uid"
+			:bg-color="item.createdBy === user.uid ? 'primary' : 'grey'"
+			:stamp="item.createdAt"
+			class="q-px-sm"
+		/>
+	</div>
 	<q-input
-		class="q-mx-md q-mt-md"
+		class="full-width fixed-bottom bg-white q-px-md"
 		rounded
 		outlined
 		v-model="newMessage"
@@ -22,6 +24,7 @@
 			<q-btn round dense flat icon="send" @click="sendMessage" />
 		</template>
 	</q-input>
+	<!-- </div> -->
 </template>
 
 <script>
