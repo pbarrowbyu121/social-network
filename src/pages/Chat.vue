@@ -26,7 +26,7 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-import { fetchMessages } from "../helpers";
+import { fetchMessages, updateMostRecentMessage } from "../helpers";
 export default {
 	name: "Chat",
 	props: ["id"],
@@ -55,14 +55,18 @@ export default {
 			return sendMessagePromise;
 		},
 		sendMessage() {
+			const messageTime = new Date();
+			const groupId = this.$route.params.id;
 			const newMessageObj = {
-				groupId: this.$route.params.id,
+				groupId: groupId,
 				createdBy: this.user.uid,
 				message: this.newMessage,
-				createdAt: new Date(),
+				createdAt: messageTime,
 				avatar: this.gameProfile.avatar,
 			};
-			this.postMessage(newMessageObj).then((res) => this.getMessages());
+			this.postMessage(newMessageObj)
+				.then((res) => updateMostRecentMessage(groupId, messageTime))
+				.then((res) => this.getMessages());
 			this.newMessage = "";
 		},
 	},
