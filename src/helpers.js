@@ -10,6 +10,8 @@
 import { getDatabase, ref, onValue, child, get } from "firebase/database";
 
 import {
+	doc,
+	updateDoc,
 	getFirestore,
 	collection,
 	addDoc,
@@ -86,6 +88,7 @@ export async function getUsersGroups(userId) {
 	groupSnapshot.forEach((doc) => {
 		groups.push({ groupId: doc.id, ...doc.data() });
 	});
+	groups.sort((a, b) => (a.mostRecentMessage > b.mostRecentMessage ? -1 : 1));
 	return groups;
 }
 
@@ -124,6 +127,17 @@ export async function createGroup(userArray) {
 		members,
 	});
 	return new Promise((resolve) => resolve(docRef.id));
+}
+
+// UPDATE MOST RECENT MESSAGE FOR GROUP
+// QUESTION: Can this be changed to a genericupdating function?
+export async function updateMostRecentMessage(groupID, timestamp) {
+	const groupRef = doc(db, "groups", groupID);
+
+	// Set the "capital" field of the city 'DC'
+	await updateDoc(groupRef, {
+		mostRecentMessage: timestamp,
+	});
 }
 
 export function getMe() {

@@ -2,7 +2,6 @@
 	<div>
 		<div class="text-h5 q-ml-md">Messages</div>
 		<q-separator />
-		<!-- <div v-for="group in groupChats" :key="group.groupId">Chat</div> -->
 		<q-list v-if="groupChats.length > 0">
 			<GroupTile
 				v-for="group in groupChats"
