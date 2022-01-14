@@ -10,7 +10,6 @@ const routes = [
 				props: true,
 			},
 			{ path: "/signin", component: () => import("pages/SignIn.vue") },
-			{ path: "/profile", component: () => import("pages/Profile.vue") },
 			{ path: "/friends", component: () => import("pages/Friends.vue") },
 			{ path: "/adduser", component: () => import("pages/CreateUser.vue") },
 			{

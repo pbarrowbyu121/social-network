@@ -1,84 +1,149 @@
 <template>
-	<div class="container">
-		<div class="profile-pic">
-			<q-img :src="friend.avatar" :ratio="1" width="300px" />
+	<div class="profile-container full-width">
+		<div class="full-width relative-position">
+			<q-img :src="friend.avatar" :ratio="1" class="profile-pic" />
+			<div class="absolute-bottom text-white text-h5 q-mb-lg q-ml-md">
+				{{ friend.firstName }} {{ friend.lastName }} {{ isMe ? "(you)" : "" }}
+			</div>
+			<div class="user-actions absolute-bottom q-ml-md">
+				<q-btn
+					push
+					color="primary"
+					round
+					icon="chat_bubble_outline"
+					@click="startGroupChat"
+					v-if="!isMe"
+				/>
+			</div>
 		</div>
-		<div class="profile-container">
-			<section>
-				<h4 class="name">{{ friend.firstName }} {{ friend.lastName }}</h4>
-				<div
-					@click="getGroupId(['kolbXddAL5469Czy7KRi', 'zIqoDV7Jr6x8TBc16Wfh'])"
-					class="actions clickable"
-				>
-					<i class="far fa-comment fa-4x"></i>
-					<div>Chat</div>
-				</div>
-				<div class="info">
-					<div class="hometown">
-						<div :style="{ minWidth: '80px' }">Hometown:</div>
-						<div>{{ friend.hometown }}</div>
-					</div>
-					<div class="bio">
-						<div :style="{ minWidth: '80px' }">Bio:</div>
-						<div>{{ friend.bio }}</div>
+		<q-card square flat bordered class="q-mt-lg">
+			<q-card-section>
+				<div class="row">
+					<div class="text-h6 col">About Me:</div>
+					<div
+						class="col-1 row items-center"
+						v-if="isMe"
+						@click="editMode = !editMode"
+					>
+						<i class="fas fa-pen fa-lg text-blue-8" />
 					</div>
 				</div>
-			</section>
-		</div>
+			</q-card-section>
+
+			<!-- about me -->
+			<q-card-section class="q-pt-none" v-if="editMode">
+				<div class="row q-pt-sm">
+					<div class="col-2">Bio:</div>
+					<q-input
+						class="col"
+						filled
+						v-model="userBio"
+						:placeholder="userBio"
+						dense
+					/>
+				</div>
+				<div class="row q-pt-sm">
+					<div class="col-2">From:</div>
+					<q-input
+						filled
+						v-model="from"
+						:placeholder="from"
+						dense
+						class="col"
+					/>
+				</div>
+				<div class="row q-mt-sm">
+					<div class="col"></div>
+					<q-btn
+						class="col-3"
+						dense
+						color="primary"
+						label="Save"
+						@click="saveEdit"
+					/>
+					<q-btn
+						dense
+						class="col-3 q-ml-sm"
+						color="gray"
+						label="Cancel"
+						text-color="primary"
+						@click="editMode = false"
+					/>
+				</div>
+			</q-card-section>
+			<q-card-section class="q-pt-none" v-else>
+				<q-card-section class="q-pt-sm">
+					<div class="row">
+						<div class="col-2">Bio:</div>
+						<div class="col">{{ userBio }}</div>
+					</div>
+				</q-card-section>
+				<q-card-section class="q-pt-sm">
+					<div class="row">
+						<div class="col-2">From:</div>
+						<div class="col">{{ from }}</div>
+					</div>
+				</q-card-section>
+			</q-card-section>
+		</q-card>
 	</div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from "vuex";
+import { Loading, QSpinnerGears } from "quasar";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
+import { filterGroup, createGroup, updateUser } from "../helpers";
 
 const db = firebase.firestore();
 
 export default {
 	name: "User Page",
 	props: ["id"],
-	privateChat: ["kolbXddAL5469Czy7KRi", "zIqoDV7Jr6x8TBc16Wfh"],
+	privateChat: [],
 	data() {
-		return {};
+		return {
+			editMode: false,
+			userBio: "",
+			from: "",
+			friend: {},
+		};
 	},
 	methods: {
-		filterGroup(userArray) {
-			const vm = this;
-			vm.groups = [];
-			return new Promise((resolve, reject) => {
-				let groupRef = db.collection("groups");
-
-				userArray.forEach((userId) => {
-					const field = "members." + userId;
-					groupRef = groupRef.where(field, "==", true);
-				});
-				groupRef
-					.get()
-					.then(function (querySnapshot) {
-						const allGroups = [];
-						querySnapshot.forEach((doc) => {
-							const data = doc.data();
-							data.id = doc.id;
-							Object.keys(data.members).length == 2
-								? allGroups.push(data)
-								: null;
-						});
-						if (allGroups.length > 0) {
-							resolve(allGroups[0].id);
-						} else {
-							resolve(null);
-						}
-					})
-					.catch(function (error) {
-						reject(error);
-					});
-			});
+		// QUESTION: I'm using a similar function in MessageGroups. Could this be DRY?
+		// editMode() {
+		// 	console.log("editMode");
+		// },
+		...mapActions("userstore", [
+			"updateFriendsAction",
+			"saveUserAction",
+			"updateFriendsActionV2",
+		]),
+		startGroupChat() {
+			const friendsArr = [this.$route.params.id, this.me.uid];
+			filterGroup(friendsArr)
+				.then((resp) => {
+					if (resp) {
+						return resp;
+					} else {
+						return createGroup(selectedFriendsArr);
+					}
+				})
+				.then((response) => this.$router.push({ path: `/chat/${response}` }));
 		},
-		getGroupId(userArray) {
-			this.filterGroup(userArray).then((res) =>
-				this.$router.push({ path: `/chat/${res}` })
-			);
+		saveEdit() {
+			Loading.show();
+			updateUser(this.id, { bio: this.userBio, from: this.from })
+				.then((response) => {
+					this.bio = response.bio;
+					this.from = response.from;
+					this.updateFriendsActionV2();
+				})
+				.then(() => {
+					Loading.hide();
+					this.editMode = false;
+				});
 		},
 	},
 	computed: {
@@ -87,19 +152,20 @@ export default {
 			"getStateLoggedIn",
 			"getFriends",
 		]),
-		// is this needed?
-		user() {
+		me() {
 			return this.getStateUser;
 		},
-		friend() {
-			// const friend = this.getFriends.find(
-			// 	(userObj) => userObj.uid === this.$route.params.id
-			// );
-			const friend = this.$store.state.userstore.friends.find(
-				(userObj) => userObj.createdBy === this.$route.params.id
-			);
-			return friend;
+		isMe() {
+			return this.getStateUser.uid === this.$route.params.id;
 		},
+	},
+	mounted() {
+		const friend = this.$store.state.userstore.friends.find(
+			(userObj) => userObj.createdBy === this.$route.params.id
+		);
+		this.friend = friend;
+		this.userBio = friend.bio;
+		this.from = friend.from;
 	},
 };
 </script>
@@ -114,15 +180,13 @@ export default {
 	flex-direction: row
 
 .profile-container
-	width: 100%
-	margin: 20px
-	border: 1px solid
-	padding: 10px
-	box-shadow: 5px 10px #888888
+	max-width: 320px
 
 .profile-pic
-	margin: auto
-	margin-left: 20px
+	border-radius: 25px
+
+.user-actions
+	margin-bottom: -20px
 
 .name
 	text-align: center
