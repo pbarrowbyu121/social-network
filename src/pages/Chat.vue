@@ -4,11 +4,12 @@
 			v-for="item in messages"
 			:key="item.message"
 			:name="getUser(item.createdBy).firstName"
+			:text-color="item.createdBy === user.uid ? 'white' : 'black'"
 			:text="[item.message]"
 			:avatar="item.avatar"
 			:sent="item.createdBy === user.uid"
 			:bg-color="item.createdBy === user.uid ? 'primary' : 'grey'"
-			:stamp="item.createdAt"
+			:stamp="messageRelativeTime(item.createdAt)"
 			class="q-px-sm"
 		/>
 	</div>
@@ -29,7 +30,11 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-import { fetchMessages, updateMostRecentMessage } from "../helpers";
+import {
+	fetchMessages,
+	updateMostRecentMessage,
+	displayMessageDate,
+} from "../helpers";
 export default {
 	name: "Chat",
 	props: ["id"],
@@ -71,6 +76,9 @@ export default {
 				.then((res) => updateMostRecentMessage(groupId, messageTime))
 				.then((res) => this.getMessages());
 			this.newMessage = "";
+		},
+		messageRelativeTime: function (input) {
+			return displayMessageDate(input);
 		},
 	},
 	created() {

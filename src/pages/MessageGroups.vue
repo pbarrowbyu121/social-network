@@ -67,6 +67,7 @@ export default {
 		};
 	},
 	methods: {
+		// QUESTION: I'm using a similar function in User page. Could this be DRY?
 		startGroupChat() {
 			const selectedFriendsArr = [...this.selectedFriends];
 			filterGroup(selectedFriendsArr)

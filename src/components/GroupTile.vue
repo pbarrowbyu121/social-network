@@ -14,7 +14,7 @@
 				</div>
 				<div class="col-3">
 					<q-item-label class="text-right" v-if="recentMessage" caption>{{
-						displayMessageDate(recentMessage.createdAt)
+						getMessageDateDisplay(recentMessage.createdAt)
 					}}</q-item-label>
 				</div>
 			</div>
@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import { fetchUser, fetchMessages } from "../helpers";
+import { fetchUser, fetchMessages, displayMessageDate } from "../helpers";
 import { DateTime, Interval } from "luxon";
 import { mapActions, mapGetters } from "vuex";
 export default {
@@ -65,28 +65,8 @@ export default {
 		},
 	},
 	methods: {
-		displayMessageDate(input) {
-			const inputDate = DateTime.fromISO(input);
-			const currentTime = DateTime.fromISO(DateTime.now().toString());
-			const interval = Interval.fromDateTimes(inputDate, currentTime).length(
-				"days"
-			);
-			const relativeDate = currentTime
-				.minus({ days: interval })
-				.toRelativeCalendar();
-			// if today: time
-			if (relativeDate === "today") {
-				return inputDate.toLocaleString(DateTime.TIME_SIMPLE);
-				// if yesterday: "yesterday"
-			} else if (relativeDate === "yesterday") {
-				return "Yesterday";
-				// if less than 7 days ago: weekday name
-			} else if (interval < 7) {
-				return inputDate.weekdayLong;
-				// if greater than 7 days ago: date
-			} else {
-				return inputDate.toLocaleString();
-			}
+		getMessageDateDisplay(input) {
+			return displayMessageDate(input);
 		},
 	},
 	created() {

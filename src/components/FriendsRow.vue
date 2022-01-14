@@ -28,7 +28,7 @@
 					</div>
 				</span>
 
-				<q-item-label class="text-caption">{{
+				<q-item-label class="text-caption text-center">{{
 					friend.firstName +
 					" " +
 					friend.lastName +

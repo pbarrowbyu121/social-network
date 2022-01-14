@@ -8,6 +8,7 @@
 // const serviceAccount = require("./serviceAccountKey.json");
 
 import { getDatabase, ref, onValue, child, get } from "firebase/database";
+import { DateTime, Interval } from "luxon";
 
 import {
 	doc,
@@ -16,8 +17,10 @@ import {
 	collection,
 	addDoc,
 	getDocs,
+	getDoc,
 	query,
 	where,
+	onSnapshot,
 } from "firebase/firestore/lite";
 import { app } from "../src/boot/firebase.js";
 
@@ -130,7 +133,7 @@ export async function createGroup(userArray) {
 }
 
 // UPDATE MOST RECENT MESSAGE FOR GROUP
-// QUESTION: Can this be changed to a genericupdating function?
+// QUESTION: Can this be changed to a generic updating function?
 export async function updateMostRecentMessage(groupID, timestamp) {
 	const groupRef = doc(db, "groups", groupID);
 
@@ -138,6 +141,64 @@ export async function updateMostRecentMessage(groupID, timestamp) {
 	await updateDoc(groupRef, {
 		mostRecentMessage: timestamp,
 	});
+}
+
+// GET USER PROFILE DOC ID
+export async function getUser(userId) {
+	const q = query(
+		collection(db, "user-profiles"),
+		where("createdBy", "==", userId)
+	);
+	const docIDs = [];
+	const querySnapshot = await getDocs(q);
+	querySnapshot.forEach((doc) => {
+		docIDs.push(doc.id);
+	});
+	return docIDs;
+}
+
+// UPDATE A USER PROFILE
+export async function updateUser(userId, updatedObj) {
+	// get the doc ID for the user-profile
+	const docIDs = await getUser(userId);
+	console.log("updatedUserobj", updatedObj);
+
+	const userRef = doc(db, "user-profiles", docIDs[0]);
+
+	await updateDoc(userRef, {
+		bio: updatedObj.bio,
+		from: updatedObj.from,
+	});
+
+	const updatedUserRef = await getDoc(userRef);
+
+	console.log("updatedUserRef", updatedUserRef);
+	return updatedUserRef.data();
+}
+
+// FORMAT DATE RELATIVE TO TODAY
+export function displayMessageDate(input) {
+	const inputDate = DateTime.fromISO(input);
+	const currentTime = DateTime.fromISO(DateTime.now().toString());
+	const interval = Interval.fromDateTimes(inputDate, currentTime).length(
+		"days"
+	);
+	const relativeDate = currentTime
+		.minus({ days: interval })
+		.toRelativeCalendar();
+	// if today: time
+	if (relativeDate === "today") {
+		return inputDate.toLocaleString(DateTime.TIME_SIMPLE);
+		// if yesterday: "yesterday"
+	} else if (relativeDate === "yesterday") {
+		return "Yesterday";
+		// if less than 7 days ago: weekday name
+	} else if (interval < 7) {
+		return inputDate.weekdayLong;
+		// if greater than 7 days ago: date
+	} else {
+		return inputDate.toLocaleString();
+	}
 }
 
 export function getMe() {

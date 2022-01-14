@@ -62,7 +62,36 @@ export default defineComponent({
 	},
 	data() {
 		return {
-			authenticatedList: [
+			notLoggedInList: [
+				{
+					title: "Sign In",
+					icon: "fas fa-sign-in-alt",
+					to: "/signin",
+				},
+			],
+		};
+	},
+
+	setup() {
+		const leftDrawerOpen = ref(false);
+
+		return {
+			leftDrawerOpen,
+			toggleLeftDrawer() {
+				leftDrawerOpen.value = !leftDrawerOpen.value;
+			},
+		};
+	},
+	computed: {
+		...mapGetters("userstore", ["getStateLoggedIn", "getStateUser"]),
+		loggedIn() {
+			return this.$store.state.userstore.loggedIn;
+		},
+		me() {
+			return this.getStateUser;
+		},
+		authenticatedList() {
+			return [
 				{
 					title: "Sign Out",
 					icon: "fas fa-sign-out-alt",
@@ -71,7 +100,7 @@ export default defineComponent({
 				{
 					title: "Profile",
 					icon: "fas fa-user-circle",
-					to: "/profile",
+					to: "/user/" + this.me.uid,
 				},
 				{
 					title: "Friends",
@@ -88,32 +117,7 @@ export default defineComponent({
 					icon: "fas fa-user-plus",
 					to: "/adduser",
 				},
-			],
-			notLoggedInList: [
-				{
-					title: "Sign In",
-					icon: "fas fa-sign-in-alt",
-					to: "/signin",
-				},
-			],
-		};
-	},
-
-	setup() {
-		const leftDrawerOpen = ref(false);
-
-		return {
-			// essentialLinks: authenticatedList,
-			leftDrawerOpen,
-			toggleLeftDrawer() {
-				leftDrawerOpen.value = !leftDrawerOpen.value;
-			},
-		};
-	},
-	computed: {
-		...mapGetters("userstore", ["getStateLoggedIn"]),
-		loggedIn() {
-			return this.$store.state.userstore.loggedIn;
+			];
 		},
 	},
 });
