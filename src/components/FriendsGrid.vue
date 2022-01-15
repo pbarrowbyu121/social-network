@@ -32,7 +32,6 @@ export default {
 		FriendsRow,
 	},
 	methods: {
-		...mapActions("userstore", ["updateFriendsAction"]),
 		selectFriend(friendId) {
 			this.$emit("select-friend", friendId);
 		},

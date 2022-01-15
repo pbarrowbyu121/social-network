@@ -115,11 +115,7 @@ export default {
 		// editMode() {
 		// 	console.log("editMode");
 		// },
-		...mapActions("userstore", [
-			"updateFriendsAction",
-			"saveUserAction",
-			"updateFriendsActionV2",
-		]),
+		...mapActions("userstore", ["saveUserAction", "updateFriendsActionV2"]),
 		startGroupChat() {
 			const friendsArr = [this.$route.params.id, this.me.uid];
 			filterGroup(friendsArr)

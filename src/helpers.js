@@ -161,7 +161,6 @@ export async function getUser(userId) {
 export async function updateUser(userId, updatedObj) {
 	// get the doc ID for the user-profile
 	const docIDs = await getUser(userId);
-	console.log("updatedUserobj", updatedObj);
 
 	const userRef = doc(db, "user-profiles", docIDs[0]);
 
@@ -171,8 +170,6 @@ export async function updateUser(userId, updatedObj) {
 	});
 
 	const updatedUserRef = await getDoc(userRef);
-
-	console.log("updatedUserRef", updatedUserRef);
 	return updatedUserRef.data();
 }
 

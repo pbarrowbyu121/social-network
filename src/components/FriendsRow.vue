@@ -57,11 +57,7 @@ export default {
 	},
 	methods: {
 		selectFriend(id) {
-			if (this.me.uid === id) {
-				return;
-			} else {
-				this.$emit("select-friend", id);
-			}
+			this.$emit("select-friend", id);
 		},
 	},
 	computed: {

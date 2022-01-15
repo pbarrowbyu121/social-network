@@ -81,6 +81,10 @@ export default {
 				.then((response) => this.$router.push({ path: `/chat/${response}` }));
 		},
 		selectFriend(friendId) {
+			if (friendId === this.user.uid) {
+				// do nothing if selecting yourself
+				return;
+			}
 			let selectedFriendsArr = [...this.selectedFriends];
 			if (selectedFriendsArr.includes(friendId)) {
 				selectedFriendsArr = selectedFriendsArr.filter((id) => id !== friendId);
