@@ -28,7 +28,7 @@ export default {
 	},
 	methods: {
 		...mapActions("userstore", [
-			"updateFriendsAction",
+			"updateFriendsActionV2",
 			"updateGameProfileAction",
 		]),
 		resetForm() {
@@ -74,11 +74,10 @@ export default {
 						return newUserObj;
 					})
 					.then((res) => this.postUser(res))
-					.then((res) => {
+					.then(() => {
+						this.updateFriendsActionV2();
 						this.resetForm();
-						return fetchUsers();
-					})
-					.then((res) => this.updateFriendsAction(res));
+					});
 			}
 		},
 		postUser(newUserObj) {

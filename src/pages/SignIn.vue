@@ -72,7 +72,7 @@ export default {
 		...mapActions("userstore", [
 			"saveUserAction",
 			"loggedInAction",
-			"updateFriendsAction",
+			"updateFriendsActionV2",
 		]),
 		googleSignIn() {
 			const provider = new firebase.auth.GoogleAuthProvider();
@@ -86,17 +86,12 @@ export default {
 					// this.$router.push("/");
 					this.saveUserAction(result.user);
 					this.loggedInAction(true);
-					// this.loggedIn = true;
 				})
 				.then(() => {
 					return this.getStateUser;
 				})
-				// fetch other users on sign in
-				.then((res) => {
-					return fetchUsers();
-				})
-				.then((res) => {
-					this.updateFriendsAction(res);
+				.then(() => {
+					this.updateFriendsActionV2();
 					this.signInOptionsModal = false;
 				})
 				.catch((err) => {
@@ -105,7 +100,6 @@ export default {
 		},
 		createAccount() {
 			const auth = getAuth();
-			// console.log("auth", auth);
 			createUserWithEmailAndPassword(auth, this.email, this.password)
 				.then((userCredential) => {
 					// Signed in

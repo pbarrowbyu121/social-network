@@ -10,8 +10,14 @@ const routes = [
 				props: true,
 			},
 			{ path: "/signin", component: () => import("pages/SignIn.vue") },
-			{ path: "/friends", component: () => import("pages/Friends.vue") },
-			{ path: "/adduser", component: () => import("pages/CreateUser.vue") },
+			{
+				path: "/friends",
+				component: () => import("pages/Friends.vue"),
+			},
+			{
+				path: "/adduser",
+				component: () => import("pages/CreateUser.vue"),
+			},
 			{
 				path: "/messages",
 				component: () => import("pages/MessageGroups.vue"),

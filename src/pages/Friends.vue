@@ -21,7 +21,6 @@ export default {
 		FriendsGrid,
 	},
 	methods: {
-		...mapActions("userstore", ["updateFriendsAction"]),
 		selectFriend(friendId) {
 			this.$router.push({ path: `/user/${friendId}` });
 		},
