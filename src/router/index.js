@@ -51,19 +51,21 @@ export default route(function ({ store /*, ssrContext  */ }) {
 		"/adduser",
 		"/messages",
 		"/user/:id",
+		"/rankfriends",
+		"/rankings",
 	];
 
 	// Navigation route protection
 	Router.beforeEach(async (to, from, next) => {
 		// persist log in state
-		const user = await new Promise((resolve, reject) => {
-			firebase.auth().onAuthStateChanged((user) => {
-				store.dispatch("userstore/saveUserAction", user);
-				// do I need this, now that I'm using user? What if instead of checking for loggedIn I checked for user in state?
-				store.dispatch("userstore/loggedInAction", true);
-				resolve(user);
-			});
-		});
+		// const user = await new Promise((resolve, reject) => {
+		// 	firebase.auth().onAuthStateChanged((user) => {
+		// 		store.dispatch("userstore/saveUserAction", user);
+		// 		// do I need this, now that I'm using user? What if instead of checking for loggedIn I checked for user in state?
+		// 		store.dispatch("userstore/loggedInAction", true);
+		// 		resolve(user);
+		// 	});
+		// });
 
 		const loggedIn = store.getters["userstore/getStateLoggedIn"];
 		const isProtected = to.matched.some((route) =>

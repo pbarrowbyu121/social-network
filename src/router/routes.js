@@ -27,6 +27,14 @@ const routes = [
 				component: () => import("pages/User.vue"),
 				props: true,
 			},
+			{
+				path: "/rankfriends",
+				component: () => import("src/pages/RankFriends.vue"),
+			},
+			{
+				path: "/rankings",
+				component: () => import("src/pages/Rankings.vue"),
+			},
 		],
 	},
 

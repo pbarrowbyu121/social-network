@@ -72,6 +72,7 @@ export async function fetchMessages(groupId) {
 	return messagesArr.sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1));
 }
 
+// QUESTION: IS THIS NEEDED STILL?
 export function fetchGroupsByUsers() {
 	const getGroupsPromise = fetch("http://localhost:3000/group").then((res) =>
 		res.json()
@@ -117,6 +118,22 @@ export async function filterGroup(userArray) {
 		}
 	});
 	return groups[0];
+}
+
+// UPLOAD RANKINGS TO DB
+export async function uploadRankings(rankingsObj) {
+	const docRef = await addDoc(collection(db, "friend-rankings"), rankingsObj);
+}
+
+// GET RANKINGS
+export async function getRankings() {
+	const rankingsArr = [];
+	const rankingsCol = collection(db, "friend-rankings");
+	const snapshot = await getDocs(rankingsCol);
+	snapshot.forEach((doc) => {
+		rankingsArr.push(doc.data());
+	});
+	return rankingsArr;
 }
 
 // CREATE NEW CHAT GROUP
@@ -200,4 +217,28 @@ export function displayMessageDate(input) {
 
 export function getMe() {
 	// console.log("getting Me");
+}
+
+// compute totals and counts for rankings
+export function averageRankings(rankingsArr) {
+	const data = rankingsArr.map((ranking) => ranking.rankings);
+	const totals = data.reduce(
+		(prev, curr) => (
+			Object.entries(curr).forEach(
+				([friendId, value]) => (prev[friendId] = (prev[friendId] || 0) + value)
+			),
+			prev
+		),
+		{}
+	);
+	const counts = data.reduce(
+		(prev, curr) => (
+			Object.entries(curr).forEach(
+				([friendId, value]) => (prev[friendId] = (prev[friendId] || 0) + 1)
+			),
+			prev
+		),
+		{}
+	);
+	return { totals, counts };
 }
