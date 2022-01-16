@@ -242,3 +242,38 @@ export function averageRankings(rankingsArr) {
 	);
 	return { totals, counts };
 }
+
+// attach avg ranks to friend objects
+export function attachRank(avgRanksArr) {
+	const avgRankCount = avgRanksArr.map((friend, index) => {
+		return { avgRank: friend.avgRank, index: index };
+	});
+
+	const friendsWithRanks = avgRanksArr.map((friend) => {
+		return {
+			...friend,
+			rank: Math.min(
+				...avgRankCount
+					.filter((avgRank) => avgRank.avgRank === friend.avgRank)
+					.map((rank) => rank.index + 1)
+			),
+		};
+	});
+
+	return friendsWithRanks;
+}
+
+// get integer ranks including ties for friends arr
+export function getRank(rankingsArr, friendsArr) {
+	const { totals, counts } = averageRankings(rankingsArr);
+	const avgRanks = friendsArr
+		.map((friend) => {
+			return {
+				...friend,
+				avgRank: totals[friend.createdBy] / counts[friend.createdBy],
+			};
+		})
+		.sort((a, b) => (a.avgRank > b.avgRank ? 1 : -1));
+	const friendsWithRanks = attachRank(avgRanks);
+	return friendsWithRanks;
+}
