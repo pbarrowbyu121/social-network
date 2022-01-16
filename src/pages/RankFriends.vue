@@ -36,9 +36,36 @@
 			</template>
 		</draggable>
 		<div class="absolute-bottom q-mb-sm q-mx-auto" style="width: 75px">
-			<q-btn color="primary" label="Submit" @click="submitRankings" />
+			<q-btn
+				color="primary"
+				label="Submit"
+				@click="confirm = true"
+				:disable="!canSubmit"
+			/>
 		</div>
 	</div>
+	<!-- Confirm submit -->
+	<q-dialog v-model="confirm" persistent>
+		<q-card>
+			<q-card-section class="row items-center">
+				<q-avatar icon="check" color="primary" text-color="white" size="2rem" />
+				<span class="q-ml-sm"
+					>Are you sure you want to lock in these rankings?</span
+				>
+			</q-card-section>
+
+			<q-card-actions align="right">
+				<q-btn flat label="Cancel" color="primary" v-close-popup />
+				<q-btn
+					flat
+					label="Confirm"
+					color="primary"
+					v-close-popup
+					@click="submitRankings"
+				/>
+			</q-card-actions>
+		</q-card>
+	</q-dialog>
 </template>
 
 <script>
@@ -58,6 +85,8 @@ export default {
 			list: [],
 			drag: false,
 			me: {},
+			canSubmit: true,
+			confirm: false,
 		};
 	},
 	methods: {
@@ -74,7 +103,10 @@ export default {
 			this.list.forEach((item, index) => {
 				submitObj.rankings[item.createdBy] = index + 1;
 			});
-			uploadRankings(submitObj);
+			uploadRankings(submitObj).then(() => {
+				this.canSubmit = false;
+				this.$q.notify({ message: "Rankings Submitted" });
+			});
 		},
 	},
 	computed: {
