@@ -5,17 +5,12 @@
 				<q-item-section avatar>
 					<div class="row">
 						<q-avatar class="relative" size="4rem">
-							<span
-								v-if="rankings.indexOf(player) + 1 > 2"
-								class="ranking-number"
-							>
-								{{ rankings.indexOf(player) + 1 }}
+							<span v-if="player.rank > 2" class="ranking-number">
+								{{ player.rank }}
 							</span>
 							<span class="top-rank relative" v-else>
 								<i class="star-icon fas fa-star fa-sm" />
-								<span class="star-number">{{
-									rankings.indexOf(player) + 1
-								}}</span>
+								<span class="star-number">{{ player.rank }}</span>
 							</span>
 							<img :src="player.avatar" />
 						</q-avatar>
@@ -30,7 +25,7 @@
 </template>
 
 <script>
-import { getRankings, averageRankings } from "../helpers";
+import { getRankings, averageRankings, getRank } from "../helpers";
 export default {
 	name: "Rankings Page",
 	data() {
@@ -41,16 +36,8 @@ export default {
 	async created() {
 		const rankingsArr = await getRankings();
 		const stateFriends = this.$store.state.userstore.friends;
-		const { totals, counts } = averageRankings(rankingsArr);
-		const avgRanks = stateFriends
-			.map((friend) => {
-				return {
-					...friend,
-					avgRank: totals[friend.createdBy] / counts[friend.createdBy],
-				};
-			})
-			.sort((a, b) => (a.avgRank > b.avgRank ? 1 : -1));
-		this.rankings = avgRanks;
+		const friendsWithRanks = getRank(rankingsArr, stateFriends);
+		this.rankings = friendsWithRanks;
 	},
 };
 </script>
