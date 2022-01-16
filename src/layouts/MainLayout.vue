@@ -69,6 +69,7 @@ export default defineComponent({
 					to: "/signin",
 				},
 			],
+			me: {},
 		};
 	},
 
@@ -87,9 +88,9 @@ export default defineComponent({
 		loggedIn() {
 			return this.$store.state.userstore.loggedIn;
 		},
-		me() {
-			return this.getStateUser;
-		},
+		// me() {
+		// 	return this.getStateUser;
+		// },
 		authenticatedList() {
 			return [
 				{
@@ -100,7 +101,7 @@ export default defineComponent({
 				{
 					title: "Profile",
 					icon: "fas fa-user-circle",
-					to: "/user/" + this.me.uid,
+					to: this.me ? "/user/" + this.me.uid : "/",
 				},
 				{
 					title: "Friends",
@@ -117,8 +118,23 @@ export default defineComponent({
 					icon: "fas fa-user-plus",
 					to: "/adduser",
 				},
+				{
+					title: "Rank Your Friends",
+					icon: "fas fa-list-ol",
+					to: "/rankfriends",
+				},
+				{
+					title: "Rankings",
+					icon: "fas fa-star",
+					to: "/rankings",
+				},
 			];
 		},
+	},
+	created() {
+		const me = this.$store.state.userstore.user;
+		console.log("me uid", me);
+		this.me = me;
 	},
 });
 </script>

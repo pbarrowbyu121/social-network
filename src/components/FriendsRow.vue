@@ -15,20 +15,20 @@
 					class="selected"
 				>
 					<div class="row items-center full-height full-width justify-center">
-						<q-avatar>
+						<q-avatar size="5rem">
 							<img :src="friend.avatar" />
 						</q-avatar>
 					</div>
 				</span>
 				<span v-else class="not-selected">
 					<div class="row items-center full-height full-width justify-center">
-						<q-avatar class="light-dimmed">
+						<q-avatar size="5rem" class="light-dimmed">
 							<img :src="friend.avatar" />
 						</q-avatar>
 					</div>
 				</span>
 
-				<q-item-label class="text-caption text-center">{{
+				<q-item-label class="text-caption text-center q-mt-sm">{{
 					friend.firstName +
 					" " +
 					friend.lastName +
@@ -71,15 +71,15 @@ export default {
 
 <style lang="sass">
 .selected
-  height: 53px
-  width: 53px
+  height: 92px
+  width: 92px
   background-color: $primary
   border-radius: 50%
   display: inline-block
 
 .not-selected
-  height: 53px
-  width: 53px
+  height: 92px
+  width: 92px
   background-color: white
   border-radius: 50%
   display: inline-block

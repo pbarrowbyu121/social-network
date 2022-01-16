@@ -19,6 +19,7 @@
     "luxon": "^2.2.0",
     "moment": "^2.29.1",
     "quasar": "^2.0.0",
+    "vuedraggable": "^4.1.0",
     "vuex": "^4.0.1",
     "vuex-persistedstate": "^4.1.0"
   },
