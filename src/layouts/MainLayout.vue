@@ -132,6 +132,7 @@ export default defineComponent({
 		},
 	},
 	created() {
+		// QUESTION: This doesn't seem to work consistently
 		const me = this.$store.state.userstore.user;
 		console.log("me uid", me);
 		this.me = me;

@@ -277,3 +277,9 @@ export function getRank(rankingsArr, friendsArr) {
 	const friendsWithRanks = attachRank(avgRanks);
 	return friendsWithRanks;
 }
+
+// add Post with image url
+export async function addImagePost(formData) {
+	const docRef = await addDoc(collection(db, "posts"), formData);
+	return new Promise((resolve) => resolve(docRef.id));
+}
