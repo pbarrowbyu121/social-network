@@ -35,6 +35,10 @@ const routes = [
 				path: "/rankings",
 				component: () => import("src/pages/Rankings.vue"),
 			},
+			{
+				path: "/uploadphoto",
+				component: () => import("src/pages/UploadPhoto.vue"),
+			},
 		],
 	},
 
