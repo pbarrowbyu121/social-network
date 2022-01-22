@@ -1,7 +1,16 @@
 <template>
 	<div class="profile-container full-width">
 		<div class="full-width relative-position">
-			<q-img :src="friend.avatar" :ratio="1" class="profile-pic" />
+			<q-img :src="avatar" :ratio="1" class="profile-pic" />
+			<div
+				class="absolute-top row q-mt-md q-mr-md"
+				v-if="isMe"
+				@click="openChangeProfilePic"
+			>
+				<div class="absolute-right">
+					<i class="fas fa-pen fa-lg text-grey-1" />
+				</div>
+			</div>
 			<div class="absolute-bottom text-white text-h5 q-mb-lg q-ml-md">
 				{{ friend.firstName }} {{ friend.lastName }} {{ isMe ? "(you)" : "" }}
 			</div>
@@ -13,6 +22,14 @@
 					icon="chat_bubble_outline"
 					@click="startGroupChat"
 					v-if="!isMe"
+				/>
+				<q-btn
+					push
+					color="primary"
+					round
+					icon="fas fa-plus"
+					@click="openUploadPhoto"
+					v-else
 				/>
 			</div>
 		</div>
@@ -86,12 +103,67 @@
 				</q-card-section>
 			</q-card-section>
 		</q-card>
-		<!-- <q-img :v-for="postItem in postsArr" :src="post.imageURL" :ratio="1" /> -->
-		<div class="row" v-if="postsArr.length > 0">
+		<!-- Photos -->
+		<div>Photos</div>
+		<div class="row w100" v-if="postsArr.length > 0">
 			<div class="col-3 q-pa-xs" v-for="item in postsArr" :key="item.id">
 				<q-img :src="item.imageURL" :ratio="1" />
 			</div>
 		</div>
+		<!-- Upload Photo Dialog -->
+		<q-dialog
+			v-model="uploadPhoto"
+			transition-show="slide-up"
+			transition-hide="slide-down"
+			position="bottom"
+		>
+			<q-card>
+				<UploadPhotoDialog />
+			</q-card>
+		</q-dialog>
+		<!-- Edit Profile Pic Dialog -->
+		<q-dialog
+			v-model="editProfilePic"
+			transition-show="slide-right"
+			transition-hide="slide-left"
+			position="left"
+		>
+			<q-card style="width: 450px; max-width: 95vw">
+				<div class="row w100 q-py-sm text-body1">
+					<div
+						class="col-2 q-pl-md close-profile-pic"
+						@click="editProfilePic = false"
+					>
+						<i class="fas fa-times fa-lg" />
+					</div>
+					<div class="col text-center q-my-auto">Select new profile pic</div>
+					<!-- <div class="col-2 q-pr-md q-my-auto text-center text-bold">Add</div> -->
+
+					<q-btn
+						class="col-2 q-mr-sm q-my-auto text-center text-bold"
+						flat
+						color="primary"
+						label="Add"
+						@click="changeProfilePic"
+					/>
+				</div>
+				<div class="row w100" v-if="postsArr.length > 0">
+					<div
+						class="col-4 q-pa-xs"
+						v-for="item in postsArr"
+						:key="item.id"
+						@click="() => selectNewPic(item.imageURL)"
+					>
+						<q-img
+							:class="[item.imageURL === newProfilePic ? 'selected-photo' : '']"
+							:src="item.imageURL"
+							:ratio="1"
+							width="110px"
+						/>
+					</div>
+				</div>
+			</q-card>
+		</q-dialog>
 	</div>
 </template>
 
@@ -101,6 +173,7 @@ import { Loading, QSpinnerGears } from "quasar";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import { filterGroup, createGroup, updateUser, getPosts } from "../helpers";
+import UploadPhotoDialog from "../components/UploadPhotoDialog";
 
 const db = firebase.firestore();
 
@@ -108,6 +181,9 @@ export default {
 	name: "User Page",
 	props: ["id"],
 	privateChat: [],
+	components: {
+		UploadPhotoDialog,
+	},
 	data() {
 		return {
 			editMode: false,
@@ -115,6 +191,10 @@ export default {
 			from: "",
 			friend: {},
 			postsArr: [],
+			uploadPhoto: false,
+			editProfilePic: false,
+			newProfilePic: "",
+			avatar: "",
 		};
 	},
 	methods: {
@@ -148,6 +228,29 @@ export default {
 					this.editMode = false;
 				});
 		},
+		openUploadPhoto() {
+			this.uploadPhoto = true;
+		},
+		openChangeProfilePic() {
+			this.editProfilePic = true;
+			console.log("changeProfilePic");
+		},
+		selectNewPic(newURL) {
+			this.newProfilePic = newURL;
+		},
+		changeProfilePic() {
+			this.editProfilePic = false;
+			Loading.show();
+			const userId = this.$route.params.id;
+			updateUser(userId, { avatar: this.newProfilePic })
+				.then((response) => {
+					this.avatar = response.avatar;
+					this.updateFriendsActionV2();
+				})
+				.then(() => {
+					Loading.hide();
+				});
+		},
 	},
 	computed: {
 		...mapGetters("userstore", [
@@ -170,6 +273,7 @@ export default {
 		this.friend = friend;
 		this.userBio = friend.bio;
 		this.from = friend.from;
+		this.avatar = friend.avatar;
 		// get posts from firebase
 		getPosts(userId).then((result) => {
 			this.postsArr = result;
@@ -180,6 +284,11 @@ export default {
 </script>
 
 <style lang="sass">
+.close-profile-pic
+	text-align: center
+	display: flex
+	margin: auto
+
 .container
 	border-style: solid
 	border-width: 2px
@@ -222,4 +331,9 @@ export default {
 
 .clickable
 	cursor: pointer
+
+.selected-photo
+	border-style: solid
+	border-width: 4px
+	border-color: blue
 </style>

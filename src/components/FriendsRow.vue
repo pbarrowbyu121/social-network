@@ -16,14 +16,14 @@
 				>
 					<div class="row items-center full-height full-width justify-center">
 						<q-avatar size="5rem">
-							<img :src="friend.avatar" />
+							<q-img :src="friend.avatar" :ratio="1" />
 						</q-avatar>
 					</div>
 				</span>
 				<span v-else class="not-selected">
 					<div class="row items-center full-height full-width justify-center">
 						<q-avatar size="5rem" class="light-dimmed">
-							<img :src="friend.avatar" />
+							<q-img :src="friend.avatar" :ratio="1" />
 						</q-avatar>
 					</div>
 				</span>

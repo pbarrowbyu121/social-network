@@ -182,8 +182,7 @@ export async function updateUser(userId, updatedObj) {
 	const userRef = doc(db, "user-profiles", docIDs[0]);
 
 	await updateDoc(userRef, {
-		bio: updatedObj.bio,
-		from: updatedObj.from,
+		...updatedObj,
 	});
 
 	const updatedUserRef = await getDoc(userRef);
