@@ -86,6 +86,12 @@
 				</q-card-section>
 			</q-card-section>
 		</q-card>
+		<!-- <q-img :v-for="postItem in postsArr" :src="post.imageURL" :ratio="1" /> -->
+		<div class="row" v-if="postsArr.length > 0">
+			<div class="col-3 q-pa-xs" v-for="item in postsArr" :key="item.id">
+				<q-img :src="item.imageURL" :ratio="1" />
+			</div>
+		</div>
 	</div>
 </template>
 
@@ -94,7 +100,7 @@ import { mapActions, mapGetters } from "vuex";
 import { Loading, QSpinnerGears } from "quasar";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
-import { filterGroup, createGroup, updateUser } from "../helpers";
+import { filterGroup, createGroup, updateUser, getPosts } from "../helpers";
 
 const db = firebase.firestore();
 
@@ -108,6 +114,7 @@ export default {
 			userBio: "",
 			from: "",
 			friend: {},
+			postsArr: [],
 		};
 	},
 	methods: {
@@ -156,12 +163,18 @@ export default {
 		},
 	},
 	mounted() {
+		const userId = this.$route.params.id;
 		const friend = this.$store.state.userstore.friends.find(
-			(userObj) => userObj.createdBy === this.$route.params.id
+			(userObj) => userObj.createdBy === userId
 		);
 		this.friend = friend;
 		this.userBio = friend.bio;
 		this.from = friend.from;
+		// get posts from firebase
+		getPosts(userId).then((result) => {
+			this.postsArr = result;
+			return result;
+		});
 	},
 };
 </script>

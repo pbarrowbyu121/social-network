@@ -45,7 +45,6 @@
 </template>
 
 <script>
-require("md-gum-polyfill");
 import { uid } from "quasar";
 import { addPhotoToStorage } from "../storageHelpers";
 import { addImagePost } from "../helpers";

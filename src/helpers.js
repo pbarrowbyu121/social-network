@@ -283,3 +283,12 @@ export async function addImagePost(formData) {
 	const docRef = await addDoc(collection(db, "posts"), formData);
 	return new Promise((resolve) => resolve(docRef.id));
 }
+
+// get posts for given user
+export async function getPosts(userId) {
+	const posts = [];
+	const postsRef = query(collection(db, "posts"), where("user", "==", userId));
+	const postsSnapshot = await getDocs(postsRef);
+	postsSnapshot.forEach((doc) => posts.push(doc.data()));
+	return posts;
+}
