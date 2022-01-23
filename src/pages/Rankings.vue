@@ -12,7 +12,7 @@
 								<i class="star-icon fas fa-star fa-sm" />
 								<span class="star-number">{{ player.rank }}</span>
 							</span>
-							<img :src="player.avatar" />
+							<q-img :src="player.avatar" :ratio="1" />
 						</q-avatar>
 					</div>
 				</q-item-section>
@@ -57,6 +57,7 @@ export default {
 	display: flex
 	align-items: center
 	justify-content: center
+	z-index: 1
 
 .star-icon
 	color: #d4af37

@@ -96,7 +96,6 @@ export default {
 			let canvas = this.$refs.canvas;
 			let context = canvas.getContext("2d");
 			var reader = new FileReader();
-			// console.log("reader", reader);
 			reader.onload = (event) => {
 				var img = new Image();
 				img.onload = () => {

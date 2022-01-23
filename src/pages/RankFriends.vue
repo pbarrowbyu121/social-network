@@ -132,8 +132,6 @@ export default {
 					rank: index + 1,
 				};
 			});
-		console.log("me", me);
-		console.log("stateFriends", stateFriends);
 		this.list = stateFriends;
 		this.me = me;
 	},
