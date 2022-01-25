@@ -28,6 +28,11 @@ const routes = [
 				props: true,
 			},
 			{
+				path: "/user-posts/:id",
+				component: () => import("pages/UserPosts.vue"),
+				props: true,
+			},
+			{
 				path: "/rankfriends",
 				component: () => import("src/pages/RankFriends.vue"),
 			},
@@ -38,6 +43,10 @@ const routes = [
 			{
 				path: "/uploadphoto",
 				component: () => import("src/pages/UploadPhoto.vue"),
+			},
+			{
+				path: "/newsfeed",
+				component: () => import("src/pages/NewsFeed.vue"),
 			},
 		],
 	},
