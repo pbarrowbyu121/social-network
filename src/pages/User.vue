@@ -92,13 +92,22 @@
 			<!-- Photos -->
 
 			<div class="row w100" v-if="postsArr.length > 0">
-				<div
+				<!-- This option opens a dialog with posts -->
+				<!-- <div
 					class="col-4 q-pa-xs"
 					v-for="item in postsArr"
 					:key="item.id"
 					@click="openPosts(item.id)"
 				>
 					<q-img :src="item.imageURL" :ratio="1" />
+				</div> -->
+				<!-- This is to lead to another actual page, not just dialog -->
+				<div class="col-4 q-pa-xs" v-for="item in postsArr" :key="item.id">
+					<router-link
+						:to="'/user-posts/' + friend.createdBy + '/#post-' + item.id"
+					>
+						<q-img :src="item.imageURL" :ratio="1" />
+					</router-link>
 				</div>
 			</div>
 		</q-card>
@@ -162,7 +171,7 @@
 			maximized
 		>
 			<div class="bg-white">
-				<div class="w100 q-py-sm text-body1 relative-position posts-header">
+				<div class="w100 q-py-sm text-body1 relative-position posts-header1">
 					<div
 						class="q-pl-md absolute-left justify-center items-center row"
 						@click="viewPosts = false"
@@ -371,7 +380,7 @@ export default {
 .photos-header
 	border-radius: 25px
 
-.posts-header
+.posts-header1
 	border-bottom-style: solid
 	border-width: 1px
 	border-color: lightgrey
